@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .course {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Course List</h1>
+    <div id="courseList"></div>
+    <script>
+        fetch('/courses')
+            .then(response => response.json())
+            .then(courses => {
+                const courseList = document.getElementById('courseList');
+                courseList.innerHTML = '';
+                courses.forEach(course => {
+                    const courseDiv = document.createElement('div');
+                    courseDiv.className = 'course';
+                    courseDiv.innerHTML = `
+                        <h2>${course.name}</h2>
+                        <p>Category: ${course.category}</p>
+                        <p>Instructor: ${course.instructor}</p>
+                        <button onclick="viewCourse(${course.id})">View Details</button>
+                    `;
+                    courseList.appendChild(courseDiv);
+                });
+            });
+
+        function viewCourse(id) {
+            fetch(`/courses/${id}`)
+                .then(response => response.json())
+                .then(course => {
+                    alert(`Course Details:
+                    Name: ${course.name}
+                    Category: ${course.category}
+                    Instructor: ${course.instructor}
+                    Duration: ${course.duration} hours`);
+                });
+        }
+    </script>
+</body>
+</html>
